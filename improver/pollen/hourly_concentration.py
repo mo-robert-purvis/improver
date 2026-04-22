@@ -19,7 +19,7 @@ class PollenHourlyConcentration(PostProcessingPlugin):
     The input cube for this plugin comes from the output of the
     Numerical Atmospheric dispersion Modelling Environment (NAME).
     It is 2D gridded data of pollen concentrations given as g/m3 and
-    the plugin converts this to concentrations in grains/m3 using
+    the plugin converts this to concentrations in "pollen grains / m3" using
     pollen diameter and density.
     """
 
@@ -79,7 +79,7 @@ class PollenHourlyConcentration(PostProcessingPlugin):
         """Perform calculations on input cube.
 
         Applies the scaling factor to the raw data for the relevant pollen taxa,
-        and converts from g/m3 to grains/m3 using pollen diameter and density.
+        and converts from g/m3 to "pollen grains / m3" using pollen diameter and density.
 
         Args:
             taxa:
@@ -96,7 +96,7 @@ class PollenHourlyConcentration(PostProcessingPlugin):
 
         # Data is in g/m3, so convert to kg/m3 by dividing by 1000,
         # (then apply scaling factor)
-        # and convert to grains/m3
+        # and convert to "pollen grains / m3"
         new_data = self._output_cube.data / 1000.0 * scaling_factor / mass_per_grain
         self._output_cube.data = new_data.astype(FLOAT_DTYPE)
 
@@ -107,7 +107,6 @@ class PollenHourlyConcentration(PostProcessingPlugin):
                 The pollen taxa being processed, used to update the cube name and metadata
         """
         self._output_cube.rename(f"{taxa}_concentration_PT01H")
-        # self._output_cube.convert_units("grains / m3")
 
     def process(
         self,
@@ -124,7 +123,9 @@ class PollenHourlyConcentration(PostProcessingPlugin):
         Returns:
             The calculated output cube.
         """
-        self._output_cube = build_output_cube_with_new_units(self, cube, "grains / m3")
+        self._output_cube = build_output_cube_with_new_units(
+            self, cube, "pollen grains / m3"
+        )
 
         # Check that the pollen taxa is one that is handled by the class
         taxa = self._output_cube.attributes.get("taxa").lower()
