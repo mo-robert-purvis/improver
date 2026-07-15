@@ -51,7 +51,7 @@ class PollenMaximumIndexForPeriod(PostProcessingPlugin):
         # Set values which are masked in _output_cube to nan
         self._output_cube.data = np.where(
             np.isnan(input_data), np.nan, self._output_cube.data
-        )
+        ).astype(np.int32)
 
     def _metadata(self):
         """Change the cube name and other metadata.
