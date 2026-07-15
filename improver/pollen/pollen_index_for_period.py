@@ -10,7 +10,6 @@ import numpy as np
 from iris.cube import Cube
 
 from improver import PostProcessingPlugin
-from improver.metadata.constants import FLOAT_DTYPE
 
 from .utilities import build_output_cube_with_new_units
 
@@ -55,7 +54,7 @@ class PollenIndexForPeriod(PostProcessingPlugin):
         # Use np.digitize to find the index of the first threshold that is greater than the data value
         self._output_cube.data = (
             np.digitize(self._output_cube.data, thresholds) - 1
-        ).astype(FLOAT_DTYPE)  # Subtract 1 to get 0-based index
+        ).astype(np.int32)  # Subtract 1 to get 0-based index
         # Set values which are masked in _output_cube to nan
         self._output_cube.data = np.where(
             np.isnan(input_data), np.nan, self._output_cube.data
